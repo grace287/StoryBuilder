@@ -2,6 +2,7 @@
 StoryBuilder SQLAlchemy Models
 """
 
+from .base import Base
 from .user import User
 from .project import Project
 from .chapter import Chapter
@@ -12,6 +13,7 @@ from .timeline import Timeline
 from .setting import Setting
 
 __all__ = [
+    "Base",
     "User",
     "Project",
     "Chapter",

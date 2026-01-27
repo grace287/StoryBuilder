@@ -6,9 +6,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from core.config import settings
 from core.database import engine
-from models.base import Base
+from models import Base
+from api import projects, chapters, scenes, characters, manuscripts, auth, websocket
 
-# Create tables
+# Create database tables
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -20,7 +21,7 @@ app = FastAPI(
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_origins=settings.cors_origins_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -43,13 +44,12 @@ async def health():
     return {"status": "healthy"}
 
 
-# Import routers
-from api import projects, chapters, scenes, characters, manuscripts, auth, websocket
-
+# API Routers
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(projects.router, prefix="/api/projects", tags=["projects"])
 app.include_router(chapters.router, prefix="/api/chapters", tags=["chapters"])
 app.include_router(scenes.router, prefix="/api/scenes", tags=["scenes"])
 app.include_router(characters.router, prefix="/api/characters", tags=["characters"])
 app.include_router(manuscripts.router, prefix="/api/manuscripts", tags=["manuscripts"])
-app.include_router(websocket.router, prefix="/api", tags=["websocket"])
+app.include_router(websocket.router, prefix="/api/ws", tags=["websocket"])
+# app.include_router(websocket.router, prefix="/api", tags=["websocket"])

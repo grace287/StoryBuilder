@@ -14,7 +14,7 @@ class ProjectBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
     description: Optional[str] = None
     genre: Optional[str] = None
-    metadata: Optional[dict] = None
+    project_metadata: Optional[dict] = None
 
 
 class ProjectCreate(ProjectBase):
@@ -29,7 +29,7 @@ class ProjectUpdate(BaseModel):
     description: Optional[str] = None
     genre: Optional[str] = None
     status: Optional[ProjectStatus] = None
-    metadata: Optional[dict] = None
+    project_metadata: Optional[dict] = None
 
 
 class ProjectResponse(ProjectBase):

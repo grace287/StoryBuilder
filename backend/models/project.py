@@ -32,7 +32,7 @@ class Project(Base, UUIDMixin, TimestampMixin):
         nullable=False,
         index=True
     )
-    metadata = Column(JSON, nullable=True)  # {"target_words": 100000, "deadline": "2026-12-31"}
+    project_metadata = Column(JSON, nullable=True)  # {"target_words": 100000, "deadline": "2026-12-31"}
     
     # Relationships
     user = relationship("User", back_populates="projects")
