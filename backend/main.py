@@ -44,9 +44,12 @@ async def health():
 
 
 # Import routers
-from api import projects, chapters, scenes, characters
+from api import projects, chapters, scenes, characters, manuscripts, auth, websocket
 
+app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(projects.router, prefix="/api/projects", tags=["projects"])
 app.include_router(chapters.router, prefix="/api/chapters", tags=["chapters"])
 app.include_router(scenes.router, prefix="/api/scenes", tags=["scenes"])
 app.include_router(characters.router, prefix="/api/characters", tags=["characters"])
+app.include_router(manuscripts.router, prefix="/api/manuscripts", tags=["manuscripts"])
+app.include_router(websocket.router, prefix="/api", tags=["websocket"])
