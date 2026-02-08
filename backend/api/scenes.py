@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from core.database import get_db
 from models.scene import Scene
-from schemas.scene import SceneCreate, SceneUpdate, SceneResponse
+from schemas.scene import SceneCreate, SceneUpdate, SceneResponse, SceneReorderRequest
 
 router = APIRouter()
 
@@ -36,6 +36,25 @@ async def list_scenes_by_chapter(
         Scene.chapter_id == chapter_id
     ).order_by(Scene.order_index).all()
     return scenes
+
+
+@router.patch("/reorder", response_model=List[SceneResponse])
+async def reorder_scenes(
+    body: SceneReorderRequest,
+    db: Session = Depends(get_db)
+):
+    """바인더 드래그: 씬 순서 일괄 변경"""
+    for item in body.order:
+        scene = db.query(Scene).filter(
+            Scene.id == item.id,
+            Scene.chapter_id == body.chapter_id
+        ).first()
+        if scene:
+            scene.order_index = item.order_index
+    db.commit()
+    return db.query(Scene).filter(
+        Scene.chapter_id == body.chapter_id
+    ).order_by(Scene.order_index).all()
 
 
 @router.get("/{scene_id}", response_model=SceneResponse)

@@ -2,7 +2,7 @@
 Chapter schemas
 """
 
-from typing import Optional
+from typing import Optional, List
 from uuid import UUID
 from datetime import datetime
 from pydantic import BaseModel, Field
@@ -37,6 +37,18 @@ class ChapterResponse(ChapterBase):
     word_count: int
     created_at: datetime
     updated_at: datetime
-    
+
     class Config:
         from_attributes = True
+
+
+class ChapterOrderItem(BaseModel):
+    """순서 변경 항목"""
+    id: UUID
+    order_index: int = Field(..., ge=0)
+
+
+class ChapterReorderRequest(BaseModel):
+    """바인더 드래그 후 장/회 순서 일괄 변경"""
+    project_id: UUID
+    order: List[ChapterOrderItem]

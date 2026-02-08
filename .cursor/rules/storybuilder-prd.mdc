@@ -1,0 +1,24 @@
+---
+description: StoryBuilder 제품 정의·설계 철학·최종 기술 스택 (PRD 기준)
+alwaysApply: true
+---
+
+# StoryBuilder PRD 핵심
+
+## 제품 정의
+- **Notion/Google Docs 아님**. Scrivener + VSCode + Notion + AI = **Narrative IDE / Story Operating System**
+- 작가용 **개발툴** 수준: Editor Engine + Graph Data + AI Narrative Engine + SaaS Platform 4층 구조
+
+## 최종 기술 스택 (확정)
+- **Frontend**: Next.js 15+, TypeScript, TipTap, Zustand, TanStack Query, Tailwind + Radix
+- **Backend**: Hybrid Microservice — API Gateway(NestJS or FastAPI), Story Engine(FastAPI/Python), AI Engine(FastAPI/Python)
+- **DB**: PostgreSQL(Core), Redis(Realtime/Autosave), Neo4j(Graph 선택)
+- **Infra**: Turborepo, pnpm, Docker, GitHub Actions, Vercel(FE), Railway or AWS ECS(BE), Cloudflare R2
+
+## 벤치마킹
+- 스크리브너(Scrivener) 벤치마킹: 바인더·코르크보드·스플릿·컴파일·스냅샷. 참고: `docs/scrivener-benchmark.md`.
+
+## 개발 시 준수
+- 단일 스택(NestJS Only) 또는 Python Only로 축소하지 말 것. Hybrid 구조 유지.
+- 신규 기능은 MVP → Pro → 장기 로드맵 단계와 ERD/API Spec과 맞출 것.
+- 소설/시나리오 분류(project_type), 로그라인·줄거리 아카이브, 씬/회별 CRUD·순서 변경(reorder) API 활용.

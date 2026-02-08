@@ -44,6 +44,18 @@ class SceneResponse(SceneBase):
     word_count: int
     created_at: datetime
     updated_at: datetime
-    
+
     class Config:
         from_attributes = True
+
+
+class SceneOrderItem(BaseModel):
+    """순서 변경 항목"""
+    id: UUID
+    order_index: int = Field(..., ge=0)
+
+
+class SceneReorderRequest(BaseModel):
+    """바인더 드래그 후 씬 순서 일괄 변경"""
+    chapter_id: UUID
+    order: List[SceneOrderItem]

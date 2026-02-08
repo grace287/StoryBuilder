@@ -35,10 +35,13 @@ erDiagram
     Project {
         uuid id PK
         uuid user_id FK
+        string project_type "novel|scenario"
         string title
         text description
         string genre
         string status "draft|active|completed|archived"
+        text logline
+        text synopsis
         json metadata
         timestamp created_at
         timestamp updated_at

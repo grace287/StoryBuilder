@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from core.database import get_db
 from models.chapter import Chapter
-from schemas.chapter import ChapterCreate, ChapterUpdate, ChapterResponse
+from schemas.chapter import ChapterCreate, ChapterUpdate, ChapterResponse, ChapterReorderRequest
 
 router = APIRouter()
 
@@ -87,6 +87,25 @@ async def delete_chapter(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Chapter not found"
         )
-    
+
     db.delete(chapter)
     db.commit()
+
+
+@router.patch("/reorder", response_model=List[ChapterResponse])
+async def reorder_chapters(
+    body: ChapterReorderRequest,
+    db: Session = Depends(get_db)
+):
+    """바인더 드래그: 장/회 순서 일괄 변경 (소설=장, 시나리오=회)"""
+    for item in body.order:
+        chapter = db.query(Chapter).filter(
+            Chapter.id == item.id,
+            Chapter.project_id == body.project_id
+        ).first()
+        if chapter:
+            chapter.order_index = item.order_index
+    db.commit()
+    return db.query(Chapter).filter(
+        Chapter.project_id == body.project_id
+    ).order_by(Chapter.order_index).all()

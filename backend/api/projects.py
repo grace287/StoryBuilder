@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from core.database import get_db
 from models.project import Project, ProjectStatus
-from schemas.project import ProjectCreate, ProjectUpdate, ProjectResponse
+from schemas.project import ProjectCreate, ProjectUpdate, ProjectResponse, ProjectArchiveResponse
 
 router = APIRouter()
 
@@ -50,6 +50,33 @@ async def get_project(
             detail="Project not found"
         )
     return project
+
+
+@router.get("/{project_id}/archive", response_model=ProjectArchiveResponse)
+async def get_project_archive(
+    project_id: UUID,
+    db: Session = Depends(get_db)
+):
+    """아카이브: 로그라인·줄거리·등장인물 등 요약 (소설/시나리오 공통)"""
+    project = db.query(Project).filter(Project.id == project_id).first()
+    if not project:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Project not found"
+        )
+    from models.character import Character
+    from models.chapter import Chapter
+    from models.scene import Scene
+    character_count = db.query(Character).filter(Character.project_id == project_id).count()
+    chapter_count = db.query(Chapter).filter(Chapter.project_id == project_id).count()
+    scene_count = db.query(Scene).join(Chapter).filter(Chapter.project_id == project_id).count()
+    base = ProjectResponse.model_validate(project)
+    return ProjectArchiveResponse(
+        **base.model_dump(),
+        character_count=character_count,
+        chapter_count=chapter_count,
+        scene_count=scene_count,
+    )
 
 
 @router.put("/{project_id}", response_model=ProjectResponse)
